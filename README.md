@@ -1,9 +1,11 @@
 # CPU_0.4.0
 My own CPU version 0.4.0 and related programs
 
+
 Parts:
 PART ONE: Introduction
 PART TWO: information about files and use
+
 
 
 PART ONE:
@@ -23,6 +25,8 @@ With these I've created an assembler to abstract concepts like if elif else and 
 
 And on top of that I've created a compiler to abstract concepts like for loops, with lost functionality of 
 automatic equation parsing to time, though it is planned to be reimplemented in future implementations
+
+
 
 PART TWO:
 bm is used for basic mathematic functions
