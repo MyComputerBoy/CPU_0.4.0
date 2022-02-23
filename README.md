@@ -23,8 +23,8 @@ compute,                 #Used for general purpose computation is in addition, s
 
 With these I've created an assembler to abstract concepts like if elif else and functions.
 
-And on top of that I've created a compiler to abstract concepts like for loops, with lost functionality of 
-automatic equation parsing to time, though it is planned to be reimplemented in future implementations
+And on top of that I've created a compiler to abstract concepts like for loops, with functionality of 
+automatic equation parsing lost to time, though it is planned to be reimplemented in future implementations
 
 
 
