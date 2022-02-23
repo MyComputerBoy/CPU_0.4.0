@@ -13,13 +13,13 @@ My own Central Processing Unit emulator written in python and runs proprietary m
 Accompanying is an assembler for low level programming and a compiler for higher level programming.
 
 There are 7 basic functions in this instruction set:
-if
-read          from rom
-read/write to/from ram  #This is an outdated implementation, as I'm implementing a newer better way in a wip project
-read/write to/from gpio
-get binary line         #for low level markers
-register associated regist #My own implementation of accessing arbitrary address registers through a known register
-compute                 #Used for general purpose computation is in addition, subtraction, logical and, logical nor etc.
+if,
+read          from rom,
+read/write to/from ram,  #This is an outdated implementation, as I'm implementing a newer better way in a wip project
+read/write to/from gpio,
+get binary line,         #for low level markers
+register associated register, #My own implementation of accessing arbitrary address registers through a known register
+compute,                 #Used for general purpose computation is in addition, subtraction, logical and, logical nor etc.
 
 With these I've created an assembler to abstract concepts like if elif else and functions.
 
