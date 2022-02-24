@@ -1,5 +1,5 @@
 # CPU_0.4.0
-My own CPU version 0.4.0 and related programs
+My own CPU version 0.4.0 and related programs.
 
 
 Parts:
@@ -29,15 +29,18 @@ automatic equation parsing lost to time, though it is planned to be reimplemente
 
 
 PART TWO:
-bm is used for basic mathematic functions
 
-stdn_gate is my implementation of logic gates in my format
+basecpuinf is used for storing the basic information about the project, like folder location, you need to change base_folder to fit your local copy.
+
+bm is used for basic mathematic functions.
+
+stdn_gate is my implementation of logic gates in my format.
 
 ucu is the main emulator used for running the CPU - to run the emulator call ucu.run(), 
 which takes the parameters filename, gui_type (normally prints integers), force_show_exceptions 
-(some exceptions are due to a quirk of how some of the functions run, which can be enabled for debugging)
+(some exceptions are due to a quirk of how some of the functions run, which can be enabled for debugging).
 
-c is the assembler  - takes parameters input_file and destination_file where input_file requires extension name
+c is the assembler  - takes parameters input_file and destination_file where input_file requires extension name.
 
-ac is the compiler  - takes parameters input_file and destination_file where input_file requires extension name
+ac is the compiler  - takes parameters input_file and destination_file where input_file requires extension name.
 
