@@ -109,7 +109,7 @@ def getParIndex( indx=[0,0,0], var="" ):
 	else:
 		try:
 			return function_params[indx[0]][indx[1]][indx[2]].index( var )
-		except:
+		except Exception:
 			return temp_par.index( var )
 #Write to file exception
 wtf_excp = [
@@ -126,13 +126,13 @@ def inline( bool, line, filename, used_in_escape ):
 	if bool:
 		if used_in_escape == 1 and sei[1] in lines[line]:
 			return False
-		else:
-			return True
-	else:
-		if sei[0] in lines[line]:
-			return False
-		else:
-			return True
+			
+		return True
+			
+	if sei[0] in lines[line]:
+		return False
+	
+	return True
 
 def getFuncNum( func_var, bool=False ):
 	if bool == False:
@@ -170,20 +170,20 @@ def getBinLine( lines, line, marks ):
 def gin( if_marks, ts ):
 	if len( if_marks[ts] ) == 0:
 		return str( ts )
-	else:
-		ts = int( ts )
-		for j in range( len( if_marks ) ):
-			t = if_marks[str(ts-j)]
-			if len( t ) == 0:
+	
+	ts = int( ts )
+	for j in range( len( if_marks ) ):
+		t = if_marks[str(ts-j)]
+		if len( t ) == 0:
+			return str( ts-j )
+		
+		iint = 1
+		for i in range( len( t ) ):
+			if t[str(i)]["0"] == 0:
+				break
+			elif iint == len( t ):
 				return str( ts-j )
-			else:
-				iint = 1
-				for i in range( len( t ) ):
-					if t[str(i)]["0"] == 0:
-						break
-					elif iint == len( t ):
-						return str( ts-j )
-					iint += 1
+			iint += 1
 	return str( 0 )
 
 def find_marks( lines ):
@@ -197,13 +197,13 @@ def find_marks( lines ):
 		try:
 			func_snd = lines[ln+1].split()
 			func_snd_var = func_snd.pop( 0 )
-		except:
+		except Exception:
 			func_snd = None
 		func_var = func.pop( 0 )
 		for i in range( 3 ):
 			try:
 				vars[i] = func.pop( 0 )
-			except:
+			except Exception:
 				vars[i] = None
 		if func_var == function_names[3][0]:
 			marks[vars[0]] = ln 
@@ -251,7 +251,7 @@ def gvt( var ):
 		try:
 			tuv = int( var )
 			return "int"
-		except:
+		except Exception:
 			return "other"
 
 def comp( filename, dest_name ):
@@ -282,7 +282,7 @@ def comp( filename, dest_name ):
 		try:
 			sline = lines[ln_n+1].split()
 			sfunc_var = sline.pop( 0 )
-		except:
+		except Exception:
 			sfunc_var = None
 		full_binary_function = [0 for i in range( bw )]
 		nextLines = [None,None,None]
@@ -299,14 +299,14 @@ def comp( filename, dest_name ):
 			if func_var not in var_excp[0] and func_var not in marks:
 				try:
 					vars[0] = line.pop( 0 )
-				except:
+				except Exception:
 					print( "Error: ln " + str( ln_n ) + ", Variable one missing" )
 					return -1
 				vars[2] = ""
 				if func_var not in var_excp[1]:
 					try:
 						vars[1] = line.pop( 0 )
-					except:
+					except Exception:
 						print( "Error: ln " + str( ln_n ) + ", Variable two missing" )
 						return -1
 					if func_var in sei:
@@ -314,7 +314,7 @@ def comp( filename, dest_name ):
 					for i in range( 2, 7 ):
 						try:
 							vars[i] = line.pop( 0 )
-						except:
+						except Exception:
 							break
 			iint = 0
 			for i in vars:
@@ -325,7 +325,7 @@ def comp( filename, dest_name ):
 						vars[iint] = str( bm.btd([int(i) for i in t]) )
 					elif tt == "hex":
 						vars[iint] = str( bm.htd(t) )
-				except:
+				except Exception:
 					pass
 				iint += 1
 		bin_rel_ln = 0
@@ -342,7 +342,7 @@ def comp( filename, dest_name ):
 				used_in_escape = 1
 				try:
 					temp_unused_var = lines[ln_n + rel_ln]
-				except:
+				except Exception:
 					print( "Error: ln " + str( ln_n + 1 ) +": Expected if inscape, got none" )
 					return -1
 				rel_rel_ln = 1
@@ -357,12 +357,12 @@ def comp( filename, dest_name ):
 						temp_func = temp_unused_var.pop( 0 )
 						try:
 							temp_var = temp_unused_var.pop( 0 )
-						except:
+						except Exception:
 							temp_var = ""
 						try:
 							temp_temp_unused_var = lines[ln_n + rel_ln + rel_rel_ln + 2].split()
 							temp_temp_func = temp_temp_unused_var.pop( 0 )
-						except:
+						except Exception:
 							temp_temp_func = ""
 						if temp_func in iblns:
 							bin_rel_ln += iblns[temp_func]
@@ -378,10 +378,10 @@ def comp( filename, dest_name ):
 						rel_rel_ln += 1
 						try:
 							temp_unused_var = lines[ln_n + 1 + rel_rel_ln]
-						except:
+						except Exception:
 							print( "Error: ln " + str( ln_n + 1 ) +": Expected if escape, got none, 0" )
 							return -1							
-					except:
+					except Exception:
 						print( "Error: ln " + str( ln_n + 1 ) +": Expected if escape, got none, 1" )
 						return -1
 				if temp_temp_func == function_names[3][1] or temp_temp_func == function_names[3][2]:
@@ -430,7 +430,7 @@ def comp( filename, dest_name ):
 					break
 			try:
 				tnn = t[str(tn+1)]["0"]
-			except:
+			except Exception:
 				tnn = None
 			if tnn == None:
 				nextLines[2] = nextLines[0]
