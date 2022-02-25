@@ -1,5 +1,5 @@
 
-#Schön Low Level Compiler for Schön Core Delta v.0.4.0
+#Schön Assembler for Schön Core Delta v.0.4.0
 
 
 import basecpuinf
