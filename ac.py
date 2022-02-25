@@ -1,6 +1,7 @@
 
+#Schön Compiler for Schön Core Delta v.0.4.0
 
-#Compiler
+
 
 def pl( lst ):
 	for i in lst:
@@ -362,13 +363,13 @@ def get_func( lines, line, temp_len, history, temp_temp ):
 	else:
 		temp = lines[line].split()
 		temp = temp.pop( 0 )
-		if temp_temp == temp_len:
-			if temp == "}" or "escape" in temp:
-				return False
-			else:
-				return True 
-		else:
+		if temp_temp != temp_len:
 			return False
+		
+		if temp == "}" or "escape" in temp:
+			return False
+		else:
+			return True 
 
 #Find the index for the last for in history
 def get_last_for( history ):
@@ -418,7 +419,7 @@ def gvt( var ):
 		try:
 			tuv = int( var )
 			return "int"
-		except:
+		except Exception:
 			return "other"
 
 def tfbh( var ):
@@ -461,19 +462,19 @@ def getLine( lines, line, if_marks, table_index, funcs=[] ):
 			tf = ""
 		try:
 			vars[0] = temp_unused_var.pop( 0 )
-		except:
+		except Exception:
 			vars[0] = None
 		try:
 			vars[1] = temp_unused_var.pop( 0 )
-		except:
+		except Exception:
 			vars[1] = None
 		try:
 			vars[2] = temp_unused_var.pop( 0 )
-		except:
+		except Exception:
 			vars[2] = None
 		try:
 			vars[3] = temp_unused_var.pop( 0 )
-		except:
+		except Exception:
 			vars[3] = None
 		iint = 0
 		for i in vars:
@@ -483,7 +484,7 @@ def getLine( lines, line, if_marks, table_index, funcs=[] ):
 					vars[iint] = bm.btd([int(i) for i in t])
 				elif vars[iint] == "0x" + t:
 					vars[iint] = bm.htd(t)
-			except:
+			except Exception:
 				pass
 			iint += 1
 		if temp_func == inscape_escape[1]:
@@ -501,7 +502,7 @@ def getLine( lines, line, if_marks, table_index, funcs=[] ):
 			try:
 				vars[0] = int( vars[0] )
 				line_rel_ln += 2
-			except:
+			except Exception:
 				line_rel_ln += 1
 		elif temp_func == inscape_escape[0]:
 			line_rel_ln += 1
@@ -576,9 +577,7 @@ def bif( lines ):
 		func = line.split()
 		func_var = func.pop( 0 )
 		if func_var in lib_funcs:
-			if func_var in lib_funcs_used:
-				pass 
-			else:
+			if func_var not in lib_funcs_used:
 				lib_funcs_used[func_var] = "used"
 		ln_n += 1
 	t = [*lib_funcs_used.keys()]
@@ -592,33 +591,40 @@ def bif( lines ):
 def gin( if_marks, ts ):
 	if len( if_marks[ts] ) == 0:
 		return str( ts )
-	else:
-		ts = int( ts )
-		for j in range( len( if_marks ) ):
-			t = if_marks[str(ts-j)]
-			if len( t ) == 0:
+	
+	ts = int( ts )
+	for j in range( len( if_marks ) ):
+		t = if_marks[str(ts-j)]
+		if len( t ) == 0:
+			return str( ts-j )
+		
+		iint = 1
+		for i in range( len( t ) ):
+			if t[str(i)]["0"] == 0:
+				break
+			elif iint == len( t ):
 				return str( ts-j )
-			else:
-				iint = 1
-				for i in range( len( t ) ):
-					if t[str(i)]["0"] == 0:
-						break
-					elif iint == len( t ):
-						return str( ts-j )
-					iint += 1
+			iint += 1
 	return str( 0 )
 
 #Check if vars[0] is viable for user_vars
 def var_one_viable_var( var, func_var, user_vars ):
-	return tfbh( var ) and func_var != if_name[0] and func_var != "break" and func_var != function_names[7] and func_var != function_names[8] and func_var != function_names[10] and vov[function_names.index(func_var)] == 1 and user_vars.get( var ) == None and str( var ) != "null" and var not in reserved_keywords
+	return (tfbh( var ) and func_var != if_name[0] and func_var != "break" 
+			and func_var != function_names[7] and func_var != function_names[8] 
+			and func_var != function_names[10] and vov[function_names.index(func_var)] == 1 
+			and user_vars.get( var ) == None and str( var ) != "null" and var not in reserved_keywords)
 
 #Check if vars[1] is viable for user_vars
 def var_two_viable_var( var, func_var, user_vars ):
-	return tfbh( var ) and var != "null" and func_var != function_names[1] and func_var != function_names[10] and user_vars.index( var ) == None and var not in reserved_keywords
+	return (tfbh( var ) and var != "null" and func_var != function_names[1] 
+			and func_var != function_names[10] and user_vars.index( var ) == None 
+			and var not in reserved_keywords)
 
 #Check if vars[2] is viable for user_vars
 def var_tre_viable_var( var, func_var, user_vars ):
-	return tfbh( var ) and var not in alu_funcs and func_var != function_names[7] and func_var != function_names[10] and user_vars.index( var ) == None and func_var != "defescape" and var not in reserved_keywords
+	return (tfbh( var ) and var not in alu_funcs and func_var != function_names[7] 
+			and func_var != function_names[10] and user_vars.index( var ) == None 
+			and func_var != "defescape" and var not in reserved_keywords)
 
 #Check if vars[3] is viable for user_vars
 def var_for_viable_var( var, user_vars ):
@@ -626,31 +632,44 @@ def var_for_viable_var( var, user_vars ):
 
 #The first logical iteration of the program
 def pon_han_specs( lines ):
+	
 	pon_han_r_len = 13		#pon_han return length
 	ln_n = 0
+	
 	for_lines = dict()
+	
 	m_for_index = dict()
 	m_for_out_index = dict()
+	
 	m_func_num = dict()
 	m_func_start_ln = dict()
 	m_a_func_num = dict()
+	
 	table_index = dict()
+	
 	if_marks = dict()
 	marks = dict()
+	
 	user_vars = dict()
+	
 	switch_index = dict()
+	
 	vars = ["" for i in range(7)]
+	
 	history = []
+	
 	funcs = dict()
 	func_calls = []
+	
 	m_func_index = dict()
+	
 	while ln_n < len( lines ):
 		line = lines[ln_n]
 		func = line.split()
 		func_var = func.pop( 0 )
 		try:
 			temp_unused_var = int( lines[ln_n] )
-		except:
+		except Exception:
 			if func_var != inscape_escape[0] and func_var != inscape_escape[1] and func_var != function_names[9]:
 				try:
 					vars[0] = func.pop( 0 )
@@ -660,7 +679,7 @@ def pon_han_specs( lines ):
 						if var_one_viable_var( vars[0], func_var, user_vars ):
 							vars[0] = str( vars[0] )
 							user_vars[vars[0]] = len( user_vars )
-				except:
+				except Exception:
 					if func_var in function_names:
 						print( "Error: ln " + str( ln_n + 1 ) + ", Variable one missing" )
 						return [-1 for i in range( pon_han_r_len )]
@@ -678,36 +697,36 @@ def pon_han_specs( lines ):
 						vars[1] = func.pop( 0 )
 						try:
 							tuv = int( vars[1] )
-						except:
+						except Exception:
 							if var_two_viable_var( vars[1], func_var, user_vars ):
 								vars[1] = str( vars[1] )
 								user_vars[vars[1]] = len( user_vars )
-					except:
+					except Exception:
 						vars[1] = 0
 					try:
 						vars[2] = func.pop( 0 )
 						try:
 							tuv = int( vars[2] )
-						except:
+						except Exception:
 							if var_two_viable_var( vars[2], func_var, user_vars ):
 								vars[2] = str( vars[2] )
 								user_vars[vars[2]] = len( user_vars )
-					except:
+					except Exception:
 						vars[2] = 0
 					try:
 						vars[3] = func.pop( 0 )
 						try:
 							tuv = int( vars[3] )
-						except:
+						except Exception:
 							if var_for_viable_var( vars[3], user_vars ):
 								vars[3] = str( vars[3] )
 								user_vars[vars[3]] = len( user_vars )
-					except:
+					except Exception:
 						if func_var == function_names[3]:
 							print( "Error: ln " + str( ln_n + 1 ) + ", Variable four is missing" )
 							return [-1 for i in range( pon_han_r_len )]
-						else:
-							vars[3] = 0
+						
+						vars[3] = 0
 				else:
 					vars[1] = ""
 					vars[2] = ""
@@ -722,7 +741,7 @@ def pon_han_specs( lines ):
 					vars[iint] = str( bm.htd( t ) )
 				elif vars[iint] == "1b" + t:
 					vars[iint] = int( t ) + len( funcs )
-			except:
+			except Exception:
 				pass
 			iint += 1
 		if func_var == if_name[0]:
@@ -761,7 +780,7 @@ def pon_han_specs( lines ):
 			try:
 				tt = lines[ln_n + 1].split()
 				tt = tt.pop( 0 )
-			except:
+			except Exception:
 				tt = ""
 			ts = str( len( if_marks ) - 1 )
 			ts = gin( if_marks, ts )
@@ -787,7 +806,7 @@ def pon_han_specs( lines ):
 							try:
 								tt = lines[ln_n + rel_ln + 1]
 								tt_uf = tt.pop( 0 )
-							except:
+							except Exception:
 								tt_uf = ""
 							if temp_unused_func == "if":
 								temp_if_var = lines[ln_n + rel_ln + 1].split()
@@ -821,7 +840,7 @@ def pon_han_specs( lines ):
 							m_func_num[ hl ] = len( funcs )
 							m_a_func_num[str( vars[0] )] = len( funcs )
 							lines[ nel - 1 ] = str( temp_temp ) + "escape # " + hl + "\n"
-					except:
+					except Exception:
 						print( "Error: ln " + str( ln_n + 1 ) + ": Expected escape, got none" )
 						return [-1 for i in range( pon_han_r_len )]
 			else:
@@ -832,14 +851,20 @@ def pon_han_specs( lines ):
 
 #The second logical iteration of the program
 def pse_han_specs( funcies, lines, m_for_index, funcs, m_func_index, marks, if_marks, table_index, m_func_start_ln, m_a_func_num ):
+	
 	for_index = dict()
 	for_lines = dict()
+	
 	func_index = dict()
+	
 	divided_user_vars = dict()
 	divided_user_vars[-1] = dict()
+	
 	for i in m_func_index:
 		divided_user_vars[m_a_func_num[i]] = dict()
+	
 	vars = ["" for i in range(7)]
+	
 	for j in funcies:
 		history = []
 		ln_n = 0
@@ -850,34 +875,35 @@ def pse_han_specs( funcies, lines, m_for_index, funcs, m_func_index, marks, if_m
 			func_var = func.pop( 0 )
 			try:
 				temp_unused_var = int( lines[ln_n] )
-			except:
+			except Exception:
 				if func_var != inscape_escape[0] and func_var != inscape_escape[1] and str( func_var ) != "break" and func_var not in marks and func_var != function_names[9]:
 					if func_var in funcs:
 						pass
 					else:
 						try:
 							vars[0] = func.pop( 0 )
-						except:
+						except Exception:
 							print( "Error: ln " + str( ln_n + 1 ) + ", Variable one missing" )
 							return -1, -1, -1, -1, -1, -1
 						vars[2] = None 
 						if func_var != if_name[0] and func_var != if_name[1] and func_var != function_names[5] and func_var != function_names[7]:
 							try:
 								vars[1] = func.pop( 0 )
-							except:
+							except Exception:
 								vars[1] = 0
 							try:
 								vars[2] = func.pop( 0 )
-							except:
+							except Exception:
 								vars[2] = 0
 							try:
 								vars[3] = func.pop( 0 )
-							except:
+							except Exception:
 								vars[3] = 0
 						else:
 							vars[1] = ""
 							vars[2] = ""
 							vars[3] = ""
+			
 			iint = 0
 			fn = get_func_num( ln_n, lines, m_func_index, m_func_start_ln, m_a_func_num )
 			if vars[0] == "=":
@@ -902,7 +928,7 @@ def pse_han_specs( funcies, lines, m_for_index, funcs, m_func_index, marks, if_m
 						vars[iint] = bm.btd([int(i) for i in t])
 					elif vars[iint] == "0x" + t:
 						vars[iint] = bm.htd(t)
-				except:
+				except Exception:
 					pass
 				iint += 1
 			if func_var == if_name[0]:
@@ -934,7 +960,7 @@ def pse_han_specs( funcies, lines, m_for_index, funcs, m_func_index, marks, if_m
 					elif j==7:
 						lines[ln_n-1] = function_names[7] + " " + vars[0] + " " + hist_len + "\n"
 						func_index[ vars[0] ] = getLine( lines, m_func_index[ vars[0] ], if_marks, table_index, funcs )
-					#except:
+					#except Exception:
 					#	print( "Error: ln " + str( ln_n + 1 ) + ": Expected escape, got none" )
 					#	return -1, -1, -1, -1, -1, -1
 			ln_n += 1
@@ -1033,17 +1059,15 @@ def comp( filename, dest_name ):
 		for_lns = None
 		try:
 			temp_unused_var = int( lines[ln_n] )
-		except:
+		except Exception:
 			if func_var != inscape_escape[0] and str( func_var ) != "break" and func_var not in marks and func_var != function_names[9]:
 				try:
 					vars[0] = func.pop( 0 )
 					if vars[0] in user_vars:
 						if vars[0] not in marks and func_var not in lib_funcs and func_var not in funcs and func_var != function_names[7] and func_var != "print" and tfbh( vars[0] ):
 							vars[0] = divided_user_vars[fn][vars[0]]
-				except:
-					if func_var == inscape_escape[1] or func_var in lib_funcs or func_var in funcs:
-						pass
-					else:
+				except Exception:
+					if not (func_var == inscape_escape[1] or func_var in lib_funcs or func_var in funcs):
 						print( "Error: ln " + str( ln_n + 1 ) + ", Variable one missing" )
 						return -1
 				vars[2] = None 
@@ -1084,7 +1108,7 @@ def comp( filename, dest_name ):
 					vars[iint] = bm.htd(t, True)
 				elif vars[iint] == "1b" + t:
 					vars[iint] = int( t ) - len( funcs )
-			except:
+			except Exception:
 				pass
 			iint += 1
 		if func_var == if_name[0]:
@@ -1108,21 +1132,21 @@ def comp( filename, dest_name ):
 		else:
 			try:
 				full_line_function = int( lines[ln_n] )
-			except:
+			except Exception:
 				try:
 					func_num = function_names.index( func_var )
-				except:
+				except Exception:
 					pass
 				try:
 					vars[0], vars[1], vars[2] = reverseOrder( add_info[function_names.index(func_var)], vars[0], vars[1], vars[2] )
-				except:
+				except Exception:
 					line_var_one = ""
 					line_var_two = ""
 					line_var_tre = ""
 				try:
 					t = lines[ln_n+1].split()
 					t = t.pop( 0 )
-				except:
+				except Exception:
 					t = ""
 				if func_var in lib_funcs:
 					nextLineTwo = "poss"
@@ -1138,30 +1162,30 @@ def comp( filename, dest_name ):
 							vars[1] = int( vars[1] )
 							for_lns.append( "rom ram " + str( len( funcs ) + 3 ) + " " + str( len( ev ) ) )
 							ev.append( vars[1] )
-						except:
+						except Exception:
 							try:
 								for_lns.append( "ramset from gpr " + str( divided_user_vars[fn][vars[1]] ) + " ram " + str( len( funcs ) + 3 ) )
-							except:
+							except Exception:
 								if show_adv_inf == "yes":
 									print( "Warning: ln " + str( ln_n ) + ", unknown function parameter two" )
 						try:
 							vars[2] = int( vars[2] )
 							for_lns.append( "rom ram " + str( len( funcs ) + 4 ) + " " + str( len( ev ) ) )
 							ev.append( vars[2] )
-						except:
+						except Exception:
 							try:
 								for_lns.append( "ramset from gpr " + str( divided_user_vars[fn][vars[2]] ) + " ram " + str( len( funcs ) + 4 ) )
-							except:
+							except Exception:
 								if show_adv_inf == "yes":
 									print( "Warning: ln " + str( ln_n ) + ", unknown function parameter three" )
 						try:
 							vars[3] = int( vars[3] )
 							for_lns.append( "rom ram " + str( len( funcs ) + 5  ) + " " + str( len( ev ) ) )
 							ev.append( vars[3] )
-						except:
+						except Exception:
 							try:
 								for_lns.append( "ramset from gpr " + str( divided_user_vars[fn][vars[3]] ) + " ram " + str( len( funcs ) + 5 ) )
-							except:
+							except Exception:
 								if show_adv_inf == "yes":
 									print( "Warning: ln " + str( ln_n ) + ", unknown function parameter four" )
 					elif func_var == lib_funcs[4] and table_index.get( vars[0] ) != None:
@@ -1176,40 +1200,40 @@ def comp( filename, dest_name ):
 							vars[0] = int( vars[0] )
 							for_lns.append( "rom ram " + str( len( funcs ) ) + " " + str( len( ev ) ) )
 							ev.append( vars[0] )
-						except:
+						except Exception:
 							try:
 								for_lns.append( "ramset from gpr " + str( divided_user_vars[fn][vars[0]] ) + " ram " + str( len( funcs ) ) )
-							except:
+							except Exception:
 								if show_adv_inf == "yes":
 									print( "Warning: ln " + str( ln_n ) + ", unknown function parameter one" )
 						try:
 							vars[1] = int( vars[1] )
 							for_lns.append( "rom ram " + str( len( funcs ) + 1 ) + " " + str( len( ev ) ) )
 							ev.append( vars[1] )
-						except:
+						except Exception:
 							try:
 								for_lns.append( "ramset from gpr " + str( divided_user_vars[fn][vars[1]] ) + " ram " + str( len( funcs ) + 1 ) )
-							except:
+							except Exception:
 								if show_adv_inf == "yes":
 									print( "Warning: ln " + str( ln_n ) + ", unknown function parameter two" )
 						try:
 							vars[2] = int( vars[2] )
 							for_lns.append( "rom ram " + str( len( funcs ) + 2 ) + " " + str( len( ev ) ) )
 							ev.append( vars[2] )
-						except:
+						except Exception:
 							try:
 								for_lns.append( "ramset from gpr " + str( divided_user_vars[fn][vars[2]] ) + " ram " + str( len( funcs ) + 2 ) )
-							except:
+							except Exception:
 								if show_adv_inf == "yes":
 									print( "Warning: ln " + str( ln_n ) + ", unknown function parameter three" )
 						try:
 							vars[3] = int( vars[3] )
 							for_lns.append( "rom ram " + str( len( funcs ) + 3  ) + " " + str( len( ev ) ) )
 							ev.append( vars[3] )
-						except:
+						except Exception:
 							try:
 								for_lns.append( "ramset from gpr " + str( divided_user_vars[fn][vars[3]] ) + " ram " + str( len( funcs ) + 3 ) )
-							except:
+							except Exception:
 								if show_adv_inf == "yes":
 									print( "Warning: ln " + str( ln_n ) + ", unknown function parameter four" )
 					for_lns.append( "gbl gpr 0" )
@@ -1223,40 +1247,40 @@ def comp( filename, dest_name ):
 						vars[0] = int( vars[0] )
 						for_lns.append( "rom ram " + str( len( funcs ) ) + " " + str( len( ev ) ) )
 						ev.append( vars[0] )
-					except:
+					except Exception:
 						try:
 							for_lns.append( "ramset from gpr " + str( divided_user_vars[fn][str(vars[0])] ) + " ram " + str( len( funcs ) ) )
-						except:
+						except Exception:
 							if show_adv_inf == "yes":
 								print( "Warning: ln " + str( ln_n ) + ", unknown function parameter one" )
 					try:
 						vars[1] = int( vars[1] )
 						for_lns.append( "rom ram " + str( len( funcs ) + 1 ) + " " + str( len( ev ) ) )
 						ev.append( vars[1] )
-					except:
+					except Exception:
 						try:
 							for_lns.append( "ramset from gpr " + str( divided_user_vars[fn][vars[1]] ) + " ram " + str( len( funcs ) + 1 ) )
-						except:
+						except Exception:
 							if show_adv_inf == "yes":
 								print( "Warning: ln " + str( ln_n ) + ", unknown function parameter two" )
 					try:
 						vars[2] = int( vars[2] )
 						for_lns.append( "rom ram " + str( len( funcs ) + 2 ) + " " + str( len( ev ) ) )
 						ev.append( vars[2] )
-					except:
+					except Exception:
 						try:
 							for_lns.append( "ramset from gpr " + str( divided_user_vars[fn][vars[2]] ) + " ram " + str( len( funcs ) + 2 ) )
-						except:
+						except Exception:
 							if show_adv_inf == "yes":
 								print( "Warning: ln " + str( ln_n ) + ", unknown function parameter three" )
 					try:
 						vars[3] = int( vars[3] )
 						for_lns.append( "rom ram " + str( len( funcs ) + 3  ) + " " + str( len( ev ) ) )
 						ev.append( vars[3] )
-					except:
+					except Exception:
 						try:
 							for_lns.append( "ramset from gpr " + str( divided_user_vars[fn][vars[3]] ) + " ram " + str( len( funcs ) + 3 ) )
-						except:
+						except Exception:
 							if show_adv_inf == "yes":
 								print( "Warning: ln " + str( ln_n ) + ", unknown function parameter four" )
 					for_lns.append( "gbl gpr 0" )
@@ -1304,7 +1328,7 @@ def comp( filename, dest_name ):
 						line_var_for = str( len( ev ) )
 						ev.append( str( vars[0] ) )
 						nextLine = "io output gpr 32"
-					except:
+					except Exception:
 						line_var_two = "output"
 						line_var_tre = "gpr"
 						line_var_for = str( divided_user_vars[fn][vars[0]] )
